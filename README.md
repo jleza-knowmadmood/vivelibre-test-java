@@ -27,6 +27,16 @@ cd exercise-1-books
 mvn test
 ```
 
+Prueba manual:
+
+```bash
+cd exercise-1-books
+mvn exec:java -Dexec.mainClass=com.vivelibre.books.BooksApplication
+```
+
+La salida por consola incluye ejemplos de filtrado, ordenación, conteo por autor, fechas formateadas y estadísticas de páginas.
+En PowerShell entrecomillar el parámetro "-Dexec.mainClass=com.vivelibre.books.BooksApplication"
+
 ### exercise-2-token-service
 
 Microservicio con Spring Boot 3.5.13 sobre Java 21.
