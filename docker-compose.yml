@@ -1,7 +1,15 @@
 services:
-  exercise-2-token-service:
-    build:
-      context: ./exercise-2-token-service
-    image: exercise-2-token-service:latest
+  auth-service:
+    image: skeet15/auth-vivelibre:latest
+    ports:
+      - "8080:8080"
+
+  token-service:
+    build: ./exercise-2-token-service
+    image: token-service:latest
     ports:
       - "8081:8081"
+    environment:
+      EXTERNAL_AUTH_BASE_URL: http://auth-service:8080
+    depends_on:
+      - auth-service

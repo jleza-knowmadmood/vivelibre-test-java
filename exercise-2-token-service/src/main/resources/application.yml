@@ -2,5 +2,10 @@ spring:
   application:
     name: exercise-2-token-service
 
+external-auth:
+  base-url: ${EXTERNAL_AUTH_BASE_URL:http://localhost:8080}
+  username: auth-vivelibre
+  password: password
+
 server:
   port: 8081
