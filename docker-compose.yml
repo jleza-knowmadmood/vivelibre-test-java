@@ -1,0 +1,7 @@
+services:
+  exercise-2-token-service:
+    build:
+      context: ./exercise-2-token-service
+    image: exercise-2-token-service:latest
+    ports:
+      - "8081:8081"
