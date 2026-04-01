@@ -1,14 +1,26 @@
 # vivelibre-test-java
 
-Technical test with two independent Maven projects.
+Prueba técnica con dos proyectos Maven independientes.
 
-## Projects
+## Proyectos
 
 ### exercise-1-books
 
-Plain Java 21 Maven project.
+Proyecto Maven con Java 21 sin Spring.
 
-Run:
+Incluye:
+
+- Carga del JSON `books.json`
+- Métodos de filtrado y procesamiento para los requisitos solicitados
+- Tests unitarios que cubren los puntos principales
+
+Notas técnicas:
+
+- La solución está implementada como un proyecto Maven simple, sin Spring.
+- Cada requisito está representado por un método dedicado dentro de la capa de servicio.
+- También se incluyen comprobaciones opcionales para autores duplicados, libros sin fecha de publicación y libros más recientes.
+
+Ejecutar:
 
 ```bash
 cd exercise-1-books
@@ -17,15 +29,15 @@ mvn test
 
 ### exercise-2-token-service
 
-Spring Boot 3.5.13 service running on Java 21.
+Microservicio con Spring Boot 3.5.13 sobre Java 21.
 
-Implemented endpoint:
+Endpoint implementado:
 
 ```text
 GET http://localhost:8081/token
 ```
 
-Expected response:
+Respuesta esperada:
 
 ```json
 {
@@ -34,14 +46,14 @@ Expected response:
 }
 ```
 
-Technical notes:
+Notas técnicas:
 
-- The service calls an external authentication service and returns the received token plus the current timestamp in ISO 8601 format.
-- The timestamp is truncated to seconds.
-- The external service base URL is configurable through `EXTERNAL_AUTH_BASE_URL`.
-- If the external service fails or returns an empty token, the API responds with `502 Bad Gateway`.
+- El servicio llama a un servicio externo de autenticación y devuelve el token recibido junto con la fecha y hora actual en formato ISO 8601.
+- El `timestamp` se devuelve truncado a segundos.
+- La URL base del servicio externo se configura mediante `EXTERNAL_AUTH_BASE_URL`.
+- Si el servicio externo falla o devuelve un token vacío, la API responde con `502 Bad Gateway`.
 
-Run locally:
+Ejecución local:
 
 ```bash
 docker run -p 8080:8080 skeet15/auth-vivelibre:latest
@@ -52,13 +64,13 @@ cd exercise-2-token-service
 mvn spring-boot:run
 ```
 
-Test endpoint:
+Probar endpoint:
 
 ```bash
 curl --location --request GET 'http://localhost:8081/token'
 ```
 
-Build image:
+Construir imagen:
 
 ```bash
 cd exercise-2-token-service
@@ -66,13 +78,13 @@ mvn clean package
 docker build -t exercise-2-token-service:latest .
 ```
 
-Run with Docker Compose:
+Ejecutar con Docker Compose:
 
 ```bash
 docker compose up --build
 ```
 
-The external authentication service used by the compose setup is provided through the Docker image `skeet15/auth-vivelibre:latest`.
+El servicio externo de autenticación usado en `docker-compose` se levanta con la imagen `skeet15/auth-vivelibre:latest`.
 
 Tests:
 
