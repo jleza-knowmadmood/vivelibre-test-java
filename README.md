@@ -63,7 +63,7 @@ Notas técnicas:
 
 - El servicio llama a un servicio externo de autenticación y devuelve el token recibido junto con la fecha y hora actual en formato ISO 8601.
 - El `timestamp` se devuelve truncado a segundos.
-- El endpoint `GET /token` está protegido con autenticación básica HTTP.
+- Esta implementación añade como extra opcional autenticación básica HTTP sobre el endpoint `GET /token`.
 - La URL base del servicio externo se configura mediante `EXTERNAL_AUTH_BASE_URL`.
 - El token externo se cachea en memoria con Spring Cache y Caffeine.
 - La expiración del token se controla mediante TTL configurable con `token-cache.ttl-seconds`.
@@ -71,18 +71,15 @@ Notas técnicas:
 - Si el servicio externo falla o devuelve un token vacío, la API responde con `502 Bad Gateway`.
 - La documentación OpenAPI está disponible mediante Swagger UI.
 
-Ejecución local:
+Ejecución recomendada con Docker Compose:
 
 ```bash
-docker run -p 8080:8080 skeet15/auth-vivelibre:latest
+docker compose up --build
 ```
 
-```bash
-cd exercise-2-token-service
-mvn spring-boot:run
-```
+El fichero `docker-compose.yml` orquesta el servicio externo de autenticación y este microservicio.
 
-Probar endpoint:
+Probar endpoint protegido:
 
 ```bash
 curl --location --request GET 'http://localhost:8081/token' \
@@ -104,21 +101,21 @@ password: token-password
 
 Se incluyen en el proyecto para facilitar la validación manual del endpoint protegido y su prueba desde Swagger UI.
 
+Ejecución alternativa del microservicio en local:
+
+```bash
+cd exercise-2-token-service
+mvn spring-boot:run
+```
+
+En este caso, el servicio externo de autenticación debe estar disponible en `http://localhost:8080`.
+
 Construir imagen:
 
 ```bash
 cd exercise-2-token-service
-mvn clean package
 docker build -t exercise-2-token-service:latest .
 ```
-
-Ejecutar con Docker Compose:
-
-```bash
-docker compose up --build
-```
-
-El servicio externo de autenticación usado en `docker-compose` se levanta con la imagen `skeet15/auth-vivelibre:latest`.
 
 Tests:
 

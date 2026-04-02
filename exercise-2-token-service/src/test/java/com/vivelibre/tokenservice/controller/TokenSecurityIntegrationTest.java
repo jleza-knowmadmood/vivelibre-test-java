@@ -37,6 +37,12 @@ class TokenSecurityIntegrationTest {
     }
 
     @Test
+    void rejectsMetricsRequestWithoutBasicAuth() throws Exception {
+        mockMvc.perform(get("/metrics"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void allowsRequestWithValidBasicAuth() throws Exception {
         when(tokenService.getToken()).thenReturn(
                 new TokenResponse("sample-token", Instant.parse("2026-04-01T14:52:22Z"))
@@ -47,5 +53,15 @@ class TokenSecurityIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("sample-token"))
                 .andExpect(jsonPath("$.timestamp").value("2026-04-01T14:52:22Z"));
+    }
+
+    @Test
+    void returnsMetricsWithValidBasicAuth() throws Exception {
+        when(requestMetricsService.getProcessedRequests()).thenReturn(5);
+
+        mockMvc.perform(get("/metrics")
+                        .with(httpBasic("token-user", "token-password")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.requestsProcessed").value(5));
     }
 }
