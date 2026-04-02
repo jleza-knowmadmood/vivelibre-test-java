@@ -65,6 +65,7 @@ Notas técnicas:
 - El `timestamp` se devuelve truncado a segundos.
 - La URL base del servicio externo se configura mediante `EXTERNAL_AUTH_BASE_URL`.
 - Si el servicio externo falla o devuelve un token vacío, la API responde con `502 Bad Gateway`.
+- La documentación OpenAPI está disponible mediante Swagger UI.
 
 Ejecución local:
 
@@ -81,6 +82,12 @@ Probar endpoint:
 
 ```bash
 curl --location --request GET 'http://localhost:8081/token'
+```
+
+Swagger UI:
+
+```text
+http://localhost:8081/swagger-ui/index.html
 ```
 
 Construir imagen:
