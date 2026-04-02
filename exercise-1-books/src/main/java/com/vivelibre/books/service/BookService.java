@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vivelibre.books.model.Book;
 import com.vivelibre.books.model.BookPageStats;
 import com.vivelibre.books.model.BookWithWordCount;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -176,24 +179,27 @@ public class BookService {
     }
 
     private String buildBooksCsv(List<Book> books) {
-        String header = "id,title,author_name,pages";
-        String rows = books.stream()
-                .map(book -> String.join(",",
-                        String.valueOf(book.getId()),
-                        escapeCsv(book.getTitle()),
-                        escapeCsv(book.getAuthor().fullName()),
-                        String.valueOf(book.getPages())
-                ))
-                .collect(Collectors.joining(System.lineSeparator()));
+        try {
+            StringWriter writer = new StringWriter();
+            CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+                    .setHeader("id", "title", "author_name", "pages")
+                    .setRecordSeparator(System.lineSeparator())
+                    .build();
 
-        return header + System.lineSeparator() + rows + System.lineSeparator();
-    }
+            try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat)) {
+                for (Book book : books) {
+                    csvPrinter.printRecord(
+                            book.getId(),
+                            book.getTitle(),
+                            book.getAuthor().fullName(),
+                            book.getPages()
+                    );
+                }
+            }
 
-    private String escapeCsv(String value) {
-        String escapedValue = value.replace("\"", "\"\"");
-        if (escapedValue.contains(",") || escapedValue.contains("\"") || escapedValue.contains(System.lineSeparator())) {
-            return "\"" + escapedValue + "\"";
+            return writer.toString();
+        } catch (IOException exception) {
+            throw new IllegalStateException("Error generating CSV export", exception);
         }
-        return escapedValue;
     }
 }

@@ -33,7 +33,7 @@ Prueba manual:
 
 ```bash
 cd exercise-1-books
-mvn exec:java -Dexec.mainClass=com.vivelibre.books.BooksApplication
+mvn compile exec:java -Dexec.mainClass=com.vivelibre.books.BooksApplication
 ```
 
 La salida por consola incluye ejemplos de filtrado, ordenación, conteo por autor, fechas formateadas y estadísticas de páginas.
