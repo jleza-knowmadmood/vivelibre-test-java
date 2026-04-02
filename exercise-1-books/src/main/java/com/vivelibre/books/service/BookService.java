@@ -130,11 +130,13 @@ public class BookService {
     }
 
     private Optional<Book> findBookWithMostPages(List<Book> books) {
-        return books.stream().max(Comparator.comparingInt(Book::getPages));
+        return books.stream()
+                .max(Comparator.comparingInt(Book::getPages));
     }
 
     private Optional<Book> findBookWithLeastPages(List<Book> books) {
-        return books.stream().min(Comparator.comparingInt(Book::getPages));
+        return books.stream()
+                .min(Comparator.comparingInt(Book::getPages));
     }
 
     private String formatTimestamp(String rawTimestamp) {

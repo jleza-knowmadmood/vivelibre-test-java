@@ -3,6 +3,7 @@ package com.vivelibre.books;
 import com.vivelibre.books.loader.BookLoader;
 import com.vivelibre.books.model.Book;
 import com.vivelibre.books.model.BookPageStats;
+import com.vivelibre.books.model.BookWithWordCount;
 import com.vivelibre.books.service.BookService;
 
 import java.io.IOException;
@@ -24,6 +25,8 @@ public class BooksApplication {
         Map<String, Long> booksByAuthor = bookService.countBooksByAuthor(books);
         Map<String, String> publicationDates = bookService.formatPublicationDates(books);
         BookPageStats pageStats = bookService.calculatePageStats(books);
+        List<BookWithWordCount> booksWithWordCount = bookService.addWordCount(books);
+        Map<String, List<Book>> groupedBooksByAuthor = bookService.groupBooksByAuthor(books);
         List<String> duplicateAuthors = bookService.findDuplicateAuthors(books);
         List<Book> booksWithoutPublicationTimestamp = bookService.findBooksWithoutPublicationTimestamp(books);
         List<Book> mostRecentBooks = bookService.findMostRecentBooks(books);
@@ -55,6 +58,18 @@ public class BooksApplication {
         System.out.println("Average pages: " + pageStats.averagePages());
         System.out.println("Book with most pages: " + pageStats.bookWithMostPages().getTitle());
         System.out.println("Book with least pages: " + pageStats.bookWithLeastPages().getTitle());
+        System.out.println();
+
+        System.out.println("Point 6 - Books with word count:");
+        booksWithWordCount.forEach(book -> System.out.println(
+                " - " + book.title() + " (" + book.authorName() + "): " + book.wordCount() + " words"
+        ));
+        System.out.println();
+
+        System.out.println("Point 6 - Books grouped by author:");
+        groupedBooksByAuthor.forEach((author, authorBooks) -> System.out.println(
+                " - " + author + ": " + authorBooks.stream().map(Book::getTitle).toList()
+        ));
         System.out.println();
 
         System.out.println("Point 7 (optional) - Duplicate authors:");
