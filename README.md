@@ -64,6 +64,9 @@ Notas técnicas:
 - El servicio llama a un servicio externo de autenticación y devuelve el token recibido junto con la fecha y hora actual en formato ISO 8601.
 - El `timestamp` se devuelve truncado a segundos.
 - La URL base del servicio externo se configura mediante `EXTERNAL_AUTH_BASE_URL`.
+- El token externo se cachea en memoria con Spring Cache y Caffeine.
+- La expiración del token se controla mediante TTL configurable con `token-cache.ttl-seconds`.
+- Se incluye logging básico del flujo de petición y una métrica simple en memoria con el número de peticiones procesadas, visible actualmente en logs.
 - Si el servicio externo falla o devuelve un token vacío, la API responde con `502 Bad Gateway`.
 - La documentación OpenAPI está disponible mediante Swagger UI.
 
