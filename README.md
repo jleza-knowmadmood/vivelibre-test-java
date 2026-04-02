@@ -63,6 +63,7 @@ Notas técnicas:
 
 - El servicio llama a un servicio externo de autenticación y devuelve el token recibido junto con la fecha y hora actual en formato ISO 8601.
 - El `timestamp` se devuelve truncado a segundos.
+- El endpoint `GET /token` está protegido con autenticación básica HTTP.
 - La URL base del servicio externo se configura mediante `EXTERNAL_AUTH_BASE_URL`.
 - El token externo se cachea en memoria con Spring Cache y Caffeine.
 - La expiración del token se controla mediante TTL configurable con `token-cache.ttl-seconds`.
@@ -84,7 +85,8 @@ mvn spring-boot:run
 Probar endpoint:
 
 ```bash
-curl --location --request GET 'http://localhost:8081/token'
+curl --location --request GET 'http://localhost:8081/token' \
+--user token-user:token-password
 ```
 
 Swagger UI:
@@ -92,6 +94,15 @@ Swagger UI:
 ```text
 http://localhost:8081/swagger-ui/index.html
 ```
+
+Credenciales de prueba:
+
+```text
+user: token-user
+password: token-password
+```
+
+Se incluyen en el proyecto para facilitar la validación manual del endpoint protegido y su prueba desde Swagger UI.
 
 Construir imagen:
 

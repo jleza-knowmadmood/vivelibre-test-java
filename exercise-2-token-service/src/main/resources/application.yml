@@ -1,6 +1,10 @@
 spring:
   application:
     name: exercise-2-token-service
+  security:
+    user:
+      name: token-user
+      password: token-password
 
 external-auth:
   base-url: ${EXTERNAL_AUTH_BASE_URL:http://localhost:8080}
