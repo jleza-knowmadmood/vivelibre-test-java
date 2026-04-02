@@ -12,15 +12,18 @@ import java.util.Map;
 public class BooksApplication {
 
     public static void main(String[] args) throws IOException {
+
         BookLoader bookLoader = new BookLoader();
-        BookService bookService = new BookService();
         List<Book> books = bookLoader.loadBooks("books.json");
-        BookPageStats pageStats = bookService.calculatePageStats(books);
+
+        BookService bookService = new BookService();
+
         List<Book> filteredBooks = bookService.filterByPagesAndHarry(books);
         List<Book> rowlingBooks = bookService.findBooksByAuthor(books, "J.K. Rowling");
         List<String> sortedTitles = bookService.getTitlesSortedAlphabetically(books);
         Map<String, Long> booksByAuthor = bookService.countBooksByAuthor(books);
         Map<String, String> publicationDates = bookService.formatPublicationDates(books);
+        BookPageStats pageStats = bookService.calculatePageStats(books);
         List<String> duplicateAuthors = bookService.findDuplicateAuthors(books);
         List<Book> booksWithoutPublicationTimestamp = bookService.findBooksWithoutPublicationTimestamp(books);
         List<Book> mostRecentBooks = bookService.findMostRecentBooks(books);
