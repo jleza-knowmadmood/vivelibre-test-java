@@ -6,8 +6,11 @@ import com.vivelibre.books.model.BookPageStats;
 import com.vivelibre.books.model.BookWithWordCount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +21,8 @@ class BookServiceTest {
 
     private BookService bookService;
     private List<Book> books;
+    @TempDir
+    Path tempDir;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -127,5 +132,34 @@ class BookServiceTest {
         assertThat(mostRecentBooks)
                 .extracting(Book::getTitle)
                 .containsExactly("The Help");
+    }
+
+    @Test
+    void exportsTitlesAndAuthorsToJsonFile() throws IOException {
+        Path outputPath = tempDir.resolve("books-summary.json");
+
+        bookService.exportTitlesAndAuthorsToJson(books, outputPath);
+
+        String exportedJson = Files.readString(outputPath);
+
+        assertThat(exportedJson)
+                .contains("\"title\" : \"The Hunger Games\"")
+                .contains("\"author\" : \"Suzanne Collins\"")
+                .contains("\"title\" : \"Harry Potter and the Sorcerer's Stone\"")
+                .contains("\"author\" : \"J.K. Rowling\"");
+    }
+
+    @Test
+    void exportsBooksToCsvFile() throws IOException {
+        Path outputPath = tempDir.resolve("books.csv");
+
+        bookService.exportBooksToCsv(books, outputPath);
+
+        String exportedCsv = Files.readString(outputPath);
+
+        assertThat(exportedCsv)
+                .startsWith("id,title,author_name,pages")
+                .contains("1,The Hunger Games,Suzanne Collins,374")
+                .contains("2,Harry Potter and the Sorcerer's Stone,J.K. Rowling,309");
     }
 }

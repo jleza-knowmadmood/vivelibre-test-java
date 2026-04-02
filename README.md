@@ -13,12 +13,14 @@ Incluye:
 - Carga del JSON `books.json`
 - Métodos de filtrado y procesamiento para los requisitos solicitados
 - Tests unitarios que cubren los puntos principales
+- Exportación opcional a JSON y CSV
 
 Notas técnicas:
 
 - La solución está implementada como un proyecto Maven simple, sin Spring.
 - Cada requisito está representado por un método dedicado dentro de la capa de servicio.
 - También se incluyen comprobaciones opcionales para autores duplicados, libros sin fecha de publicación y libros más recientes.
+- El punto 9 opcional genera ficheros de salida JSON y CSV.
 
 Ejecutar:
 
@@ -36,6 +38,7 @@ mvn exec:java -Dexec.mainClass=com.vivelibre.books.BooksApplication
 
 La salida por consola incluye ejemplos de filtrado, ordenación, conteo por autor, fechas formateadas y estadísticas de páginas.
 En PowerShell entrecomillar el parámetro "-Dexec.mainClass=com.vivelibre.books.BooksApplication"
+Los ficheros opcionales del punto 9 se generan en `exercise-1-books/target/generated/`.
 
 ### exercise-2-token-service
 

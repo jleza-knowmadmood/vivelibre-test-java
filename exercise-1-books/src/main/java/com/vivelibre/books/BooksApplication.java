@@ -7,6 +7,7 @@ import com.vivelibre.books.model.BookWithWordCount;
 import com.vivelibre.books.service.BookService;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,10 @@ public class BooksApplication {
         List<String> duplicateAuthors = bookService.findDuplicateAuthors(books);
         List<Book> booksWithoutPublicationTimestamp = bookService.findBooksWithoutPublicationTimestamp(books);
         List<Book> mostRecentBooks = bookService.findMostRecentBooks(books);
+        Path jsonOutputPath = Path.of("target", "generated", "books-summary.json");
+        Path csvOutputPath = Path.of("target", "generated", "books.csv");
+        bookService.exportTitlesAndAuthorsToJson(books, jsonOutputPath);
+        bookService.exportBooksToCsv(books, csvOutputPath);
 
         System.out.println("Books loaded: " + books.size());
         System.out.println();
@@ -82,5 +87,10 @@ public class BooksApplication {
 
         System.out.println("Point 8 (optional) - Most recent books:");
         mostRecentBooks.forEach(book -> System.out.println(" - " + book.getTitle()));
+        System.out.println();
+
+        System.out.println("Point 9 (optional) - Exported files:");
+        System.out.println(" - JSON: " + jsonOutputPath.toAbsolutePath());
+        System.out.println(" - CSV: " + csvOutputPath.toAbsolutePath());
     }
 }

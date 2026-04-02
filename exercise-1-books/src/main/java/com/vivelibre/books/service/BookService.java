@@ -1,9 +1,13 @@
 package com.vivelibre.books.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vivelibre.books.model.Book;
 import com.vivelibre.books.model.BookPageStats;
 import com.vivelibre.books.model.BookWithWordCount;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -19,6 +23,7 @@ public class BookService {
 
     private static final int WORDS_PER_PAGE = 250;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     // Punto 1: filtrar libros con más de 400 páginas y cuyo título contenga "Harry".
     public List<Book> filterByPagesAndHarry(List<Book> books) {
@@ -122,6 +127,18 @@ public class BookService {
                 .toList();
     }
 
+    // Punto 9 (opcional): generar un JSON con títulos y autores.
+    public void exportTitlesAndAuthorsToJson(List<Book> books, Path outputPath) throws IOException {
+        Files.createDirectories(outputPath.getParent());
+        Files.writeString(outputPath, buildTitlesAndAuthorsJson(books));
+    }
+
+    // Punto 9 (opcional): exportar la lista a CSV con id, title, author_name y pages.
+    public void exportBooksToCsv(List<Book> books, Path outputPath) throws IOException {
+        Files.createDirectories(outputPath.getParent());
+        Files.writeString(outputPath, buildBooksCsv(books));
+    }
+
     private double calculateAveragePages(List<Book> books) {
         return books.stream()
                 .mapToInt(Book::getPages)
@@ -145,5 +162,38 @@ public class BookService {
                 .atZone(ZoneOffset.UTC)
                 .toLocalDate();
         return DATE_FORMATTER.format(publicationDate);
+    }
+
+    private String buildTitlesAndAuthorsJson(List<Book> books) throws IOException {
+        List<Map<String, String>> titlesAndAuthors = books.stream()
+                .map(book -> Map.of(
+                        "title", book.getTitle(),
+                        "author", book.getAuthor().fullName()
+                ))
+                .toList();
+
+        return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(titlesAndAuthors);
+    }
+
+    private String buildBooksCsv(List<Book> books) {
+        String header = "id,title,author_name,pages";
+        String rows = books.stream()
+                .map(book -> String.join(",",
+                        String.valueOf(book.getId()),
+                        escapeCsv(book.getTitle()),
+                        escapeCsv(book.getAuthor().fullName()),
+                        String.valueOf(book.getPages())
+                ))
+                .collect(Collectors.joining(System.lineSeparator()));
+
+        return header + System.lineSeparator() + rows + System.lineSeparator();
+    }
+
+    private String escapeCsv(String value) {
+        String escapedValue = value.replace("\"", "\"\"");
+        if (escapedValue.contains(",") || escapedValue.contains("\"") || escapedValue.contains(System.lineSeparator())) {
+            return "\"" + escapedValue + "\"";
+        }
+        return escapedValue;
     }
 }
