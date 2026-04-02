@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -169,10 +170,12 @@ public class BookService {
 
     private String buildTitlesAndAuthorsJson(List<Book> books) throws IOException {
         List<Map<String, String>> titlesAndAuthors = books.stream()
-                .map(book -> Map.of(
-                        "title", book.getTitle(),
-                        "author", book.getAuthor().fullName()
-                ))
+                .map(book -> {
+                    Map<String, String> entry = new LinkedHashMap<>();
+                    entry.put("title", book.getTitle());
+                    entry.put("author", book.getAuthor().fullName());
+                    return entry;
+                })
                 .toList();
 
         return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(titlesAndAuthors);
