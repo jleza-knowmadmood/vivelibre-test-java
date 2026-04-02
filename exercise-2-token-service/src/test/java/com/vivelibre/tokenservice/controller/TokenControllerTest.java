@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vivelibre.tokenservice.advice.GlobalExceptionHandler;
 import com.vivelibre.tokenservice.dto.TokenResponse;
 import com.vivelibre.tokenservice.exception.InvalidTokenException;
+import com.vivelibre.tokenservice.service.RequestMetricsService;
 import com.vivelibre.tokenservice.service.TokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ class TokenControllerTest {
     @Mock
     private TokenService tokenService;
 
+    @Mock
+    private RequestMetricsService requestMetricsService;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -39,7 +43,7 @@ class TokenControllerTest {
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new TokenController(tokenService))
+        mockMvc = MockMvcBuilders.standaloneSetup(new TokenController(tokenService, requestMetricsService))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
