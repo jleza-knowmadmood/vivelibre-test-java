@@ -2,6 +2,18 @@
 
 Prueba técnica con dos proyectos Maven independientes.
 
+Repositorio GitHub:
+
+```text
+https://github.com/jleza-knowmadmood/vivelibre-test-java
+```
+
+Imagen Docker Hub:
+
+```text
+https://hub.docker.com/r/jlkmm/exercise-2-token-service
+```
+
 ## Proyectos
 
 ### exercise-1-books
@@ -133,6 +145,14 @@ Construir imagen:
 cd exercise-2-token-service
 docker build -t exercise-2-token-service:latest .
 ```
+
+Ejecutar imagen de forma aislada:
+
+```bash
+docker run -p 8081:8081 --add-host=host.docker.internal:host-gateway -e SPRING_PROFILES_ACTIVE=local -e EXTERNAL_AUTH_BASE_URL=http://host.docker.internal:8080 exercise-2-token-service:latest
+```
+
+En este caso, el servicio externo de autenticación debe estar ejecutándose fuera del contenedor y accesible desde `host.docker.internal:8080`.
 
 Tests:
 

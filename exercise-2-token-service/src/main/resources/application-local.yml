@@ -1,4 +1,4 @@
 external-auth:
-  base-url: http://localhost:8080
+  base-url: ${EXTERNAL_AUTH_BASE_URL:http://localhost:8080}
   username: auth-vivelibre
   password: password
