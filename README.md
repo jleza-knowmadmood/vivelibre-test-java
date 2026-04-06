@@ -160,3 +160,13 @@ Tests:
 cd exercise-2-token-service
 mvn test
 ```
+
+## Decisiones técnicas
+
+- Se ha optado por dos proyectos Maven independientes en lugar de un proyecto multimódulo para mantener cada ejercicio aislado y facilitar la revisión de la prueba.
+- `exercise-1-books` se ha resuelto sin Spring, priorizando una implementación simple y centrada en procesamiento de datos, con un método independiente por cada punto solicitado.
+- `exercise-2-token-service` se ha desarrollado con Spring Boot y OpenAPI para exponer el endpoint de forma clara y documentada.
+- La autenticación básica HTTP se ha añadido como mejora opcional del ejercicio 2 para reforzar el acceso al endpoint sin alterar el flujo principal pedido.
+- La persistencia temporal y expiración del token se han resuelto con Spring Cache y Caffeine, evitando infraestructura adicional y manteniendo una solución ligera en memoria.
+- La configuración de `exercise-2-token-service` se ha separado en perfiles `local` y `docker` para cubrir explícitamente distintos entornos de ejecución.
+- El Dockerfile del ejercicio 2 se ha definido como multistage para que la construcción de la imagen no dependa de artefactos locales previos.
