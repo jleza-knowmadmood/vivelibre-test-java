@@ -139,20 +139,14 @@ mvn spring-boot:run -Dspring-boot.run.profiles=local
 En este caso se activa el perfil `local` y el servicio externo de autenticación debe estar disponible en `http://localhost:8080`.
 En PowerShell entrecomillar el parámetro "-Dspring-boot.run.profiles=local"
 
-Construir imagen:
+Descargar y ejecutar imagen publicada en Docker Hub:
 
 ```bash
-cd exercise-2-token-service
-docker build -t exercise-2-token-service:latest .
+docker pull jlkmm/exercise-2-token-service:latest
+docker run -p 8081:8081 --add-host=host.docker.internal:host-gateway -e SPRING_PROFILES_ACTIVE=local -e EXTERNAL_AUTH_BASE_URL=http://host.docker.internal:8080 jlkmm/exercise-2-token-service:latest
 ```
 
-Ejecutar imagen de forma aislada:
-
-```bash
-docker run -p 8081:8081 --add-host=host.docker.internal:host-gateway -e SPRING_PROFILES_ACTIVE=local -e EXTERNAL_AUTH_BASE_URL=http://host.docker.internal:8080 exercise-2-token-service:latest
-```
-
-En este caso, el servicio externo de autenticación debe estar ejecutándose fuera del contenedor y accesible desde `host.docker.internal:8080`.
+En este caso, el servicio externo de autenticación debe estar ejecutándose en tu máquina host en el puerto `8080`. El contenedor accede a él mediante `host.docker.internal`.
 
 Tests:
 
