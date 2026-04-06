@@ -65,9 +65,10 @@ Notas técnicas:
 - El `timestamp` se devuelve truncado a segundos.
 - Esta implementación añade como extra opcional autenticación básica HTTP sobre el endpoint `GET /token`.
 - La configuración se separa por perfiles Spring para los entornos `local` y `docker`.
+- El perfil `local` usa `http://localhost:8080` y el perfil `docker` usa `http://auth-service:8080`.
 - El token externo se cachea en memoria con Spring Cache y Caffeine.
 - La expiración del token se controla mediante TTL configurable con `token-cache.ttl-seconds`.
-- Se incluye logging básico del flujo de petición y una métrica simple en memoria con el número de peticiones procesadas, visible actualmente en logs.
+- Se incluye logging básico del flujo de petición y una métrica simple en memoria con el número de peticiones procesadas, expuesta además en `GET /metrics`.
 - Si el servicio externo falla o devuelve un token vacío, la API responde con `502 Bad Gateway`.
 - La documentación OpenAPI está disponible mediante Swagger UI.
 
@@ -84,6 +85,21 @@ Probar endpoint protegido:
 ```bash
 curl --location --request GET 'http://localhost:8081/token' \
 --user token-user:token-password
+```
+
+Probar endpoint de métricas:
+
+```bash
+curl --location --request GET 'http://localhost:8081/metrics' \
+--user token-user:token-password
+```
+
+Respuesta esperada:
+
+```json
+{
+  "requestsProcessed": 5
+}
 ```
 
 Swagger UI:
