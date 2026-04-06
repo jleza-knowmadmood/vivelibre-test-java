@@ -64,7 +64,7 @@ Notas técnicas:
 - El servicio llama a un servicio externo de autenticación y devuelve el token recibido junto con la fecha y hora actual en formato ISO 8601.
 - El `timestamp` se devuelve truncado a segundos.
 - Esta implementación añade como extra opcional autenticación básica HTTP sobre el endpoint `GET /token`.
-- La URL base del servicio externo se configura mediante `EXTERNAL_AUTH_BASE_URL`.
+- La configuración se separa por perfiles Spring para los entornos `local` y `docker`.
 - El token externo se cachea en memoria con Spring Cache y Caffeine.
 - La expiración del token se controla mediante TTL configurable con `token-cache.ttl-seconds`.
 - Se incluye logging básico del flujo de petición y una métrica simple en memoria con el número de peticiones procesadas, visible actualmente en logs.
@@ -105,10 +105,11 @@ Ejecución alternativa del microservicio en local:
 
 ```bash
 cd exercise-2-token-service
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-En este caso, el servicio externo de autenticación debe estar disponible en `http://localhost:8080`.
+En este caso se activa el perfil `local` y el servicio externo de autenticación debe estar disponible en `http://localhost:8080`.
+En PowerShell entrecomillar el parámetro "-Dspring-boot.run.profiles=local"
 
 Construir imagen:
 
